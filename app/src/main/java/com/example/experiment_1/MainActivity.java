@@ -91,6 +91,8 @@ public class MainActivity extends AppCompatActivity {
         text.setText(num.peek());
     }
 
+
+    //判断符号优先级
     private String compare(String op1, String op2) {
         String op="";
         switch (op1){
