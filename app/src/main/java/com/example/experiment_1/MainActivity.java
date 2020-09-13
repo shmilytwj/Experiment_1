@@ -13,7 +13,7 @@ import java.util.Stack;
 
 public class MainActivity extends AppCompatActivity {
     //使用栈存储数字和运算符
-    Stack<Double> num = new Stack<>();
+    Stack<String> num = new Stack<>();
     Stack<String> operate = new Stack<>();
     final int NumID[] = {R.id.Numbuer00, R.id.Numbuer0, R.id.Numbuer1, R.id.Numbuer2, R.id.Numbuer3
             , R.id.Numbuer4, R.id.Numbuer5, R.id.Numbuer6, R.id.Numbuer7, R.id.Numbuer8, R.id.Numbuer9};
@@ -58,37 +58,37 @@ public class MainActivity extends AppCompatActivity {
         double Result = 0;
         TextView text = (TextView) findViewById(R.id.DisplayScreen);
         String string = text.getText().toString()+"#";
-        int n=0;
         //将显示屏中的表达式进行划分:数字和运算符
         char[] str = string.toCharArray();
         operate.push("#");
-        //为运算符栈设置标志，仅剩一个元素#说明运算完毕
-        while (operate.peek()!="#" || n<str.length){
             for (int i = 0; i < str.length; i++) {
                 if (str[i] <= '9' && str[i] >= '0') {
-                    num.push(Double.parseDouble(String.valueOf(str[i])));
+                          if(i-1>=0 && str[i-1] <= '9' && str[i-1] >= '0' ){//判断前一个符号是否是数字
+                              num.push(num.pop()+String.valueOf(str[i]));
+                          }
+                          else
+                              num.push(String.valueOf(str[i]));
                 } else if (str[i] == '+' | str[i] == '-' | str[i] == 'x' | str[i] == '÷' | str[i] == '(' | str[i] == ')'| str[i]=='#') {
                     //运算符的优先级判断
                     switch (compare(operate.peek(), String.valueOf(str[i]))) {
                         case "<":
                             operate.push(String.valueOf(str[i]));
                             break;
-                        case "=":
-                            operate.pop();
-                            break;
                         case ">":
                             String op = operate.pop();
-                            double b = num.pop();
-                            double a = num.pop();
+                            double b = Double.parseDouble(num.pop());
+                            double a = Double.parseDouble(num.pop());
                             Result = Calculator(a, op, b);
-                            num.push(Result);
+                            num.push(String.valueOf(Result));
+                            if(compare(operate.peek(), String.valueOf(str[i]))!="=")
+                                operate.push(String.valueOf(str[i]));
+                            else
+                                operate.pop();
                             break;
                     }
                 }
-                n = n + 1;
             }
-            }
-        text.setText(String.valueOf(num.pop()));
+        text.setText(num.peek());
     }
 
     private String compare(String op1, String op2) {
@@ -117,16 +117,28 @@ public class MainActivity extends AppCompatActivity {
                     case "÷":
                     case ")":
                     case "#":
+                    case "+":
+                    case "-":
                         op=">";
                         break;
                     case "(":
-                    case "+":
-                    case "-":
+                        op="<";
+                        break;
+                }
+                break;
+            case "(":
+                switch(op2){
+                    case ")":
+                        op="=";
+                        break;
+                    default:
                         op="<";
                         break;
                 }
                 break;
             case ")":
+                op=">";
+                break;
             case "#":
                 op="<";
                 break;
