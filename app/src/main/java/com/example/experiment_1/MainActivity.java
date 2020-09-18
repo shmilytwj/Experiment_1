@@ -348,6 +348,7 @@ public class MainActivity extends AppCompatActivity {
                         text.setText(String.valueOf(n));
                     }
                 }
+
                 else if(v1.getText().toString().equals("dm")){
                     if(v2.getText().toString().equals("cm")){
                         n=Double.parseDouble(num.getText().toString())*1000;
