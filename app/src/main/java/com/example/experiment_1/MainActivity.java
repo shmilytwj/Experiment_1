@@ -262,7 +262,7 @@ public class MainActivity extends AppCompatActivity {
                         text.setText(result);
                         break;
                     case "8":
-                        result=Integer.toBinaryString(n);
+                        result=Integer.toOctalString(n);
                         text.setText(result);
                         break;
                     case "10":
